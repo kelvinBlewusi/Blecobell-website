@@ -103,10 +103,7 @@
     <!-- Hero Section -->
     <section class="relative py-24 sm:py-32 overflow-hidden">
         <div class="absolute inset-0 z-0">
-            <div id="hero-loader" class="absolute inset-0 flex items-center justify-center bg-gray-900">
-                <div class="hero-image-loader"></div>
-            </div>
-            <img id="hero-image" src="" alt="Abstract high-tech background" class="w-full h-full object-cover opacity-0 transition-opacity duration-1000 blur-sm scale-110">
+            <img id="hero-image" src="https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1740&q=80" alt="Abstract high-tech background" class="w-full h-full object-cover">
             <div class="absolute inset-0 bg-gray-900/60"></div>
         </div>
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
@@ -114,7 +111,7 @@
                 Wholesale iPhones, MacBooks & More
             </h1>
             <p class="mt-6 text-lg sm:text-xl text-gray-300 max-w-2xl mx-auto">
-                Unused, Unopened, Undamaged Fresh-in-box factory-unlocked Apple products at unbeatable wholesale prices.
+                Brand new, factory-unlocked Apple products at unbeatable wholesale prices.
                 Delivered to you in 7-10 days.
             </p>
             <div class="mt-10">
@@ -382,12 +379,12 @@
         const GEMINI_API_KEY = "AIzaSyCrDoHUSWdoK2vIl6fQERsOxpeCvNwgWI8";
         const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${GEMINI_API_KEY}`;
 
-        // --- Imagen Image API ---
+        <!-- --- Imagen Image API ---
         const IMAGEN_API_KEY = ""; // Use an empty string, Canvas will provide the key
         const IMAGEN_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${IMAGEN_API_KEY}`;
+        -->
 
-
-        // Product Data
+        <!-- Product Data -->
         const productData = [
             { category: 'iPhone', model: 'iPhone XR', image: 'https://i.imgur.com/1kOASEx.jpeg', prices: [
                 { storage: '64GB', price: 2660 },
@@ -783,6 +780,7 @@
                 );
             });
             
+            /*
             // --- New Hero Image Generation ---
             async function generateHeroImage() {
                 const loader = document.getElementById('hero-loader');
@@ -834,11 +832,12 @@
                     }
                 }
             }
+            */
 
             // Initial Page Load
             renderProducts();
             populateAiSelectors();
-            generateHeroImage();
+            // generateHeroImage(); // No longer calling this, image is static
         });
     </script>
 </body>
