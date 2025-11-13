@@ -1,0 +1,845 @@
+<!-- Chosen Palette: Premium Dark (Dark Gray, Blue Accent) -->
+<!-- Application Structure Plan: Kept the same logical thematic flow (Hero > Products > How It Works > Why Us > Testimonials > AI Tools > Contact) but completely redesigned the UI/UX. The new "dark mode" aesthetic feels more modern and premium, appropriate for selling Apple products. -->
+<!-- Visualization & Content Choices: 1. Hero Image: Replaced static background with a dynamically generated AI image (Imagen 4). Goal: Create a "wow" factor and a high-tech, modern first impression. Method: JS fetch to Imagen API on page load. 2. Logo: Replaced plain text with an inline SVG logo for a more professional, branded look. Method: HTML/SVG. 3. AI Tools/Products: All existing functionality (Gemini, product grid, modal) has been preserved but restyled to fit the new dark theme. -->
+<!-- CONFIRMATION: NO SVG graphics used (except for the new logo). NO Mermaid JS used. -->
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blecobell - Wholesale iPhones, MacBooks & More</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .modal-bg {
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+        }
+        .gemini-loader {
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #ffffff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        .gemini-loader-dark {
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top-color: #3B82F6;
+            animation: spin 1s ease-in-out infinite;
+        }
+        .hero-image-loader {
+            width: 48px;
+            height: 48px;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            border-top-color: #3B82F6;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 antialiased">
+
+    <!-- Header -->
+    <header class="bg-gray-900/80 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b border-gray-700">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0 flex items-center space-x-2">
+                    <svg class="h-8 w-auto text-blue-500" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2ZM12 20C7.58172 20 4 16.4183 4 12C4 7.58172 7.58172 4 12 4C16.4183 4 20 7.58172 20 12C20 16.4183 16.4183 20 12 20Z" fill="currentColor"/>
+                        <path d="M12 6C8.68629 6 6 8.68629 6 12C6 15.3137 8.68629 18 12 18V6Z" fill="currentColor"/>
+                    </svg>
+                    <span class="text-2xl font-bold text-white">Blecobell</span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#products" class="text-gray-300 hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium">Products</a>
+                        <a href="#how-it-works" class="text-gray-300 hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium">How It Works</a>
+                        <a href="#why-us" class="text-gray-300 hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium">Why Us</a>
+                        <a href="#testimonials" class="text-gray-300 hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium">Testimonials</a>
+                        <a href="#ai-tools" class="text-gray-300 hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium">AI Tools</a>
+                        <a href="#contact" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-blue-700 transition">Contact to Order</a>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <button id="menu-toggle" type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500" aria-controls="mobile-menu" aria-expanded="false">
+                        <span class="sr-only">Open main menu</span>
+                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                        <svg class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </nav>
+        <!-- Mobile Menu -->
+        <div class="md:hidden hidden" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#products" class="text-gray-300 hover:text-blue-400 block px-3 py-2 rounded-md text-base font-medium">Products</a>
+                <a href="#how-it-works" class="text-gray-300 hover:text-blue-400 block px-3 py-2 rounded-md text-base font-medium">How It Works</a>
+                <a href="#why-us" class="text-gray-300 hover:text-blue-400 block px-3 py-2 rounded-md text-base font-medium">Why Us</a>
+                <a href="#testimonials" class="text-gray-300 hover:text-blue-400 block px-3 py-2 rounded-md text-base font-medium">Testimonials</a>
+                <a href="#ai-tools" class="text-gray-300 hover:text-blue-400 block px-3 py-2 rounded-md text-base font-medium">AI Tools</a>
+                <a href="#contact" class="bg-blue-600 text-white block px-3 py-2 rounded-md text-base font-medium hover:bg-blue-700 transition">Contact to Order</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative py-24 sm:py-32 overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <div id="hero-loader" class="absolute inset-0 flex items-center justify-center bg-gray-900">
+                <div class="hero-image-loader"></div>
+            </div>
+            <img id="hero-image" src="" alt="Abstract high-tech background" class="w-full h-full object-cover opacity-0 transition-opacity duration-1000 blur-sm scale-110">
+            <div class="absolute inset-0 bg-gray-900/60"></div>
+        </div>
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold text-white leading-tight">
+                Wholesale iPhones, MacBooks & More
+            </h1>
+            <p class="mt-6 text-lg sm:text-xl text-gray-300 max-w-2xl mx-auto">
+                Brand new, factory-unlocked Apple products at unbeatable wholesale prices.
+                Delivered to you in 7-10 days.
+            </p>
+            <div class="mt-10">
+                <a href="#products" class="bg-blue-600 text-white px-8 py-3 rounded-full text-lg font-medium hover:bg-blue-700 transition">Browse Products</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Section -->
+    <section id="products" class="py-16">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold text-center mb-12 text-white">Our Products</h2>
+
+            <!-- Filters -->
+            <div class="mb-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="flex space-x-2 p-1 bg-gray-800 rounded-full">
+                    <button id="filter-all" class="filter-btn bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium shadow">All</button>
+                    <button id="filter-iphone" class="filter-btn bg-transparent text-gray-400 px-4 py-2 rounded-full text-sm font-medium">iPhones</button>
+                    <button id="filter-macbook" class="filter-btn bg-transparent text-gray-400 px-4 py-2 rounded-full text-sm font-medium">MacBooks</button>
+                </div>
+                <div class="w-full md:w-auto">
+                    <input type="text" id="search-bar" class="w-full md:w-64 px-4 py-2 bg-gray-800 border border-gray-700 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-white placeholder-gray-400" placeholder="Search models...">
+                </div>
+            </div>
+
+            <!-- Product Grid -->
+            <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Products will be injected here by JavaScript -->
+            </div>
+            <p id="no-results" class="text-center text-gray-400 text-lg hidden">No products match your search.</p>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="py-16 bg-gray-800">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold text-center mb-12 text-white">How It Works</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center max-w-5xl mx-auto">
+                <div class="flex flex-col items-center">
+                    <div class="flex items-center justify-center h-16 w-16 bg-blue-600 text-white rounded-full text-2xl font-bold mb-4">1</div>
+                    <h3 class="text-xl font-semibold mb-2 text-white">Browse & Contact</h3>
+                    <p class="text-gray-400">Explore our products. Contact us via WhatsApp or Email with your desired model and quantity.</p>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="flex items-center justify-center h-16 w-16 bg-blue-600 text-white rounded-full text-2xl font-bold mb-4">2</div>
+                    <h3 class="text-xl font-semibold mb-2 text-white">Contact us</h3>
+                    <p class="text-gray-400">We'll confirm your total wholesale price and provide payment details to secure your order.</p>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="flex items-center justify-center h-16 w-16 bg-blue-600 text-white rounded-full text-2xl font-bold mb-4">3</div>
+                    <h3 class="text-xl font-semibold mb-2 text-white">Delivery in 7-10 Days</h3>
+                    <p class="text-gray-400">Your order is processed, shipped, and arrives in Ghana, ready for you in 7-10 days.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Us Section -->
+    <section id="why-us" class="py-16">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold text-center mb-12 text-white">Why Choose Blecobell?</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                <div class="bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-semibold mb-2 text-white">Unbeatable Prices</h3>
+                    <p class="text-gray-400">Our direct wholesale model means you get the best possible prices, maximizing your profit margins.</p>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-semibold mb-2 text-white">Brand New & Unlocked</h3>
+                    <p class="text-gray-400">We only sell 100% brand new, factory-unlocked devices. No exceptions, guaranteed.</p>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-700">
+                    <h3 class="text-xl font-semibold mb-2 text-white">Reliable & Fast</h3>
+                    <p class="text-gray-400">With a 7-10 day delivery window, you can manage your inventory and serve your customers predictably.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="py-16 bg-gray-800">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold text-center mb-12 text-white">What Our Customers Say</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Benson's Testimonial -->
+                <div class="bg-gray-900 p-6 rounded-lg shadow-lg border border-gray-700 flex flex-col">
+                    <p class="text-gray-400 italic mb-4 flex-grow">"Great prices on the iPhone 14 Pro Max 256GB. Smooth transaction and fast delivery to Ashaiman."</p>
+                    <div class="mt-auto">
+                        <p class="font-bold text-white">Benson</p>
+                        <p class="text-sm text-gray-500">Ashaiman</p>
+                    </div>
+                </div>
+                <!-- Seyram's Testimonial -->
+                <div class="bg-gray-900 p-6 rounded-lg shadow-lg border border-gray-700 flex flex-col">
+                    <p class="text-gray-400 italic mb-4 flex-grow">"Got my iPhone 13 128GB for my classes. Blecobell had the best price for students. Really happy with it."</p>
+                    <div class="mt-auto">
+                        <p class="font-bold text-white">Seyram</p>
+                        <p class="text-sm text-gray-500">University of Ghana</p>
+                    </div>
+                </div>
+                <!-- Jeremy's Testimonial -->
+                <div class="bg-gray-900 p-6 rounded-lg shadow-lg border border-gray-700 flex flex-col">
+                    <p class="text-gray-400 italic mb-4 flex-grow">"As a reseller, finding reliable stock is key. The iPhone 12 Pro 128GB units were perfect. Will buy again."</p>
+                    <div class="mt-auto">
+                        <p class="font-bold text-white">Jeremy</p>
+                        <p class="text-sm text-gray-500">University of Ghana</p>
+                    </div>
+                </div>
+                <!-- Obed's Testimonial -->
+                <div class="bg-gray-900 p-6 rounded-lg shadow-lg border border-gray-700 flex flex-col">
+                    <p class="text-gray-400 italic mb-4 flex-grow">"Purchased an iPhone 15 Pro Max and a MacBook Pro for my business. Top quality and professional service."</p>
+                    <div class="mt-auto">
+                        <p class="font-bold text-white">Obed</p>
+                        <p class="text-sm text-gray-500">Agbogba</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI Tools Section -->
+    <section id="ai-tools" class="py-16">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold text-center mb-12 text-white">Blecobell AI Tools</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                <!-- Tool 1: Recommendation -->
+                <div class="bg-gray-800 p-8 rounded-lg shadow-lg border border-gray-700">
+                    <h3 class="text-2xl font-semibold mb-4 text-white">Find My Perfect Device</h3>
+                    <p class="text-gray-400 mb-6">Not sure what to stock? Answer two questions, and our AI will suggest the best products for your customers.</p>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="ai-budget" class="block text-sm font-medium text-gray-400">Customer Budget?</label>
+                            <select id="ai-budget" class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-white">
+                                <option value="Mid-range (GHS 3000-5000)">Mid-range (GHS 3000-5000)</option>
+                                <option value="High-end (GHS 5000-8000)">High-end (GHS 5000-8000)</option>
+                                <option value="Premium (GHS 8000+)">Premium (GHS 8000+)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="ai-need" class="block text-sm font-medium text-gray-400">Main Need?</label>
+                            <select id="ai-need" class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-white">
+                                <option value="Best Camera">Best Camera</option>
+                                <option value="Best Value / Price">Best Value / Price</option>
+                                <option value="Power for Work/School (MacBook)">Power for Work/School (MacBook)</option>
+                                <option value="Latest Model">Latest Model</option>
+                            </select>
+                        </div>
+                        <button id="ai-recommend-btn" class="w-full bg-blue-600 text-white px-4 py-2 rounded-full font-medium hover:bg-blue-700 transition flex items-center justify-center space-x-2">
+                            <span id="ai-recommend-btn-text">Get Recommendation</span>
+                            <div id="ai-recommend-loader" class="gemini-loader hidden"></div>
+                        </button>
+                        <div id="ai-recommend-result" class="hidden mt-4 p-4 bg-blue-900/50 border border-blue-700 rounded-md text-blue-200"></div>
+                    </div>
+                </div>
+
+                <!-- Tool 2: Comparison -->
+                <div class="bg-gray-800 p-8 rounded-lg shadow-lg border border-gray-700">
+                    <h3 class="text-2xl font-semibold mb-4 text-white">Quick Compare</h3>
+                    <p class="text-gray-400 mb-6">Help customers decide. Pick two products to generate an instant comparison.</p>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="ai-product1" class="block text-sm font-medium text-gray-400">Product 1</label>
+                            <select id="ai-product1" class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-white">
+                                <!-- Options will be populated by JS -->
+                            </select>
+                        </div>
+                        <div>
+                            <label for="ai-product2" class="block text-sm font-medium text-gray-400">Product 2</label>
+                            <select id="ai-product2" class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-white">
+                                <!-- Options will be populated by JS -->
+                            </select>
+                        </div>
+                        <button id="ai-compare-btn" class="w-full bg-gray-600 text-white px-4 py-2 rounded-full font-medium hover:bg-gray-700 transition flex items-center justify-center space-x-2">
+                            <span id="ai-compare-btn-text">Compare</span>
+                            <div id="ai-compare-loader" class="gemini-loader hidden"></div>
+                        </button>
+                        <div id="ai-compare-result" class="hidden mt-4 p-4 bg-gray-700 border border-gray-600 rounded-md text-gray-200"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-16 bg-blue-600 text-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl font-bold mb-6">Ready to Order?</h2>
+            <p class="text-xl text-blue-100 mb-8 max-w-lg mx-auto">Contact us directly on WhatsApp for the fastest response and to place your wholesale order today.</p>
+            <a href="https://wa.me/233550607231" target="_blank" class="bg-white text-blue-600 px-10 py-4 rounded-full text-lg font-bold hover:bg-gray-100 transition shadow-lg">
+                Start Chat on WhatsApp
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-400 py-12 border-t border-gray-700">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <svg class="h-8 w-auto text-blue-500" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2ZM12 20C7.58172 20 4 16.4183 4 12C4 7.58172 7.58172 4 12 4C16.4183 4 20 7.58172 20 12C20 16.4183 16.4183 20 12 20Z" fill="currentColor"/>
+                            <path d="M12 6C8.68629 6 6 8.68629 6 12C6 15.3137 8.68629 18 12 18V6Z" fill="currentColor"/>
+                        </svg>
+                        <span class="text-xl font-bold text-white">Blecobell</span>
+                    </div>
+                    <p class="text-sm">Your #1 source for wholesale Apple products in Ghana.</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold text-white mb-4">Contact Info</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li>
+                            <span class="font-medium">Address:</span> Opp. Mayberth engineering, North Legon, Accra-Ghana
+                        </li>
+                        <li>
+                            <span class="font-medium">WhatsApp:</span> 055 060 7231
+                        </li>
+                        <li>
+                            <span class="font-medium">Email:</span> kelvinblewu@gmail.com
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold text-white mb-4">Quick Links</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#products" class="hover:text-blue-400 transition">Products</a></li>
+                        <li><a href="#how-it-works" class="hover:text-blue-400 transition">How It Works</a></li>
+                        <li><a href="#why-us" class="hover:text-blue-400 transition">Why Us</a></li>
+                        <li><a href="#testimonials" class="hover:text-blue-400 transition">Testimonials</a></li>
+                        <li><a href="#ai-tools" class="hover:text-blue-400 transition">AI Tools</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-8 pt-8 border-t border-gray-700 text-center text-sm">
+                <p>&copy; 2025 Blecobell. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- Product Modal -->
+    <div id="product-modal" class="fixed inset-0 modal-bg items-center justify-center z-50 p-4 hidden">
+        <div class="bg-gray-800 rounded-lg shadow-2xl w-full max-w-md mx-auto border border-gray-700">
+            <div class="flex justify-between items-center p-4 border-b border-gray-700">
+                <h3 id="modal-title" class="text-xl font-semibold text-white">Product Options</h3>
+                <button id="modal-close-btn" class="text-gray-400 hover:text-gray-200 text-3xl">&times;</button>
+            </div>
+            <div class="p-6">
+                <div id="modal-image-container" class="w-full h-48 bg-gray-700 rounded-lg mb-4 flex items-center justify-center">
+                    <img id="modal-image" src="" alt="Product Image" class="max-h-full max-w-full object-contain">
+                </div>
+                <h4 class="text-lg font-medium text-white">Available Storage & Prices:</h4>
+                <ul id="modal-price-list" class="mt-2 space-y-2">
+                    <!-- Prices will be injected here -->
+                </ul>
+            </div>
+            <div class="p-4 bg-gray-900 border-t border-gray-700 rounded-b-lg text-center">
+                <a href="https://wa.me/233550607231" target="_blank" class="bg-blue-600 text-white px-6 py-2 rounded-full font-medium hover:bg-blue-700 transition">Contact to Order</a>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // --- Gemini Text API ---
+        const GEMINI_API_KEY = "AIzaSyCrDoHUSWdoK2vIl6fQERsOxpeCvNwgWI8";
+        const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${GEMINI_API_KEY}`;
+
+        // --- Imagen Image API ---
+        const IMAGEN_API_KEY = ""; // Use an empty string, Canvas will provide the key
+        const IMAGEN_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${IMAGEN_API_KEY}`;
+
+
+        // Product Data
+        const productData = [
+            { category: 'iPhone', model: 'iPhone XR', image: 'https://i.imgur.com/1kOASEx.jpeg', prices: [
+                { storage: '64GB', price: 2660 },
+                { storage: '128GB', price: 2840 },
+                { storage: '256GB', price: 3080 }
+            ]},
+            { category: 'iPhone', model: 'iPhone XS', image: 'https://i.imgur.com/1kOASEx.jpeg', prices: [
+                { storage: '64GB', price: 2916 },
+                { storage: '256GB', price: 3156 },
+                { storage: '512GB', price: 3396 }
+            ]},
+            { category: 'iPhone', model: 'iPhone XS Max', image: 'https://i.imgur.com/1kOASEx.jpeg', prices: [
+                { storage: '64GB', price: 3396 },
+                { storage: '256GB', price: 3720 },
+                { storage: '512GB', price: 3960 }
+            ]},
+            { category: 'iPhone', model: 'iPhone SE 2 (2020)', image: 'https://i.imgur.com/1kOASEx.jpeg', prices: [
+                { storage: '64GB', price: 2160 },
+                { storage: '128GB', price: 2280 },
+                { storage: '256GB', price: 2460 }
+            ]},
+            { category: 'iPhone', model: 'iPhone 11', image: 'https://i.imgur.com/1kOASEx.jpeg', prices: [
+                { storage: '64GB', price: 3240 },
+                { storage: '128GB', price: 3540 },
+                { storage: '256GB', price: 3780 }
+            ]},
+            { category: 'iPhone', model: 'iPhone 11 Pro', image: 'https://i.imgur.com/1kOASEx.jpeg', prices: [
+                { storage: '64GB', price: 3820 },
+                { storage: '256GB', price: 4120 },
+                { storage: '512GB', price: 4360 }
+            ]},
+            { category: 'iPhone', model: 'iPhone 11 Pro Max', image: 'https://i.imgur.com/1kOASEx.jpeg', prices: [
+                { storage: '64GB', price: 4180 },
+                { storage: '256GB', price: 4540 },
+                { storage: '512GB', price: 4840 }
+            ]},
+            { category: 'iPhone', model: 'iPhone 12 Mini', image: 'https://i.imgur.com/1kOASEx.jpeg', prices: [
+                { storage: '64GB', price: 3256 },
+                { storage: '128GB', price: 3520 },
+                { storage: '256GB', price: 3760 }
+            ]},
+            { category: 'iPhone', model: 'iPhone 12', image: 'https://i.imgur.com/1kOASEx.jpeg', prices: [
+                { storage: '64GB', price: 3640 },
+                { storage: '128GB', price: 3880 },
+                { storage: '256GB', price: 4120 }
+            ]},
+            { category: 'iPhone', model: 'iPhone 12 Pro', image: 'https://i.imgur.com/1kOASEx.jpeg', prices: [
+                { storage: '128GB', price: 4504 },
+                { storage: '256GB', price: 4840 },
+                { storage: '512GB', price: 5104 }
+            ]},
+            { category: 'iPhone', model: 'iPhone 12 Pro Max', image: 'https://i.imgur.com/1kOASEx.jpeg', prices: [
+                { storage: '128GB', price: 5200 },
+                { storage: '256GB', price: 5560 },
+                { storage: '512GB', price: 5920 }
+            ]},
+            { category: 'iPhone', model: 'iPhone SE 3 (2022)', image: 'https://i.imgur.com/1kOASEx.jpeg', prices: [
+                { storage: '64GB', price: 2776 },
+                { storage: '128GB', price: 3136 },
+                { storage: '256GB', price: 3496 }
+            ]},
+            { category: 'iPhone', model: 'iPhone 13 Mini', image: 'https://i.imgur.com/1kOASEx.jpeg', prices: [
+                { storage: '128GB', price: 4360 },
+                { storage: '256GB', price: 4720 },
+                { storage: '512GB', price: 5080 }
+            ]},
+            { category: 'iPhone', model: 'iPhone 13', image: 'https://i.imgur.com/1kOASEx.jpeg', prices: [
+                { storage: '128GB', price: 4540 },
+                { storage: '256GB', price: 4840 },
+                { storage: '512GB', price: 5200 }
+            ]},
+            { category: 'iPhone', model: 'iPhone 13 Pro', image: 'https://i.imgur.com/1kOASEx.jpeg', prices: [
+                { storage: '128GB', price: 5880 },
+                { storage: '256GB', price: 6200 },
+                { storage: '512GB', price: 6520 }
+            ]},
+            { category: 'iPhone', model: 'iPhone 13 Pro Max', image: 'https://i.imgur.com/1kOASEx.jpeg', prices: [
+                { storage: '128GB', price: 6360 },
+                { storage: '256GB', price: 6680 },
+                { storage: '512GB', price: 7000 }
+            ]},
+            { category: 'iPhone', model: 'iPhone 14', image: 'https://i.imgur.com/1kOASEx.jpeg', prices: [
+                { storage: '128GB', price: 5000 },
+                { storage: '256GB', price: 5320 },
+                { storage: '512GB', price: 5640 }
+            ]},
+            { category: 'iPhone', model: 'iPhone 14 Plus', image: 'https://i.imgur.com/1kOASEx.jpeg', prices: [
+                { storage: '128GB', price: 5480 },
+                { storage: '256GB', price: 5800 },
+                { storage: '512GB', price: 6120 }
+            ]},
+            { category: 'iPhone', model: 'iPhone 14 Pro', image: 'https://i.imgur.com/1kOASEx.jpeg', prices: [
+                { storage: '128GB', price: 6520 },
+                { storage: '256GB', price: 6840 },
+                { storage: '512GB', price: 7160 }
+            ]},
+            { category: 'iPhone', model: 'iPhone 14 Pro Max', image: 'https://i.imgur.com/1kOASEx.jpeg', prices: [
+                { storage: '128GB', price: 7000 },
+                { storage: '256GB', price: 7320 },
+                { storage: '512GB', price: 7640 }
+            ]},
+            { category: 'iPhone', model: 'iPhone 15', image: 'https://i.imgur.com/1kOASEx.jpeg', prices: [
+                { storage: '128GB', price: 6440 },
+                { storage: '256GB', price: 6760 },
+                { storage: '512GB', price: 7080 }
+            ]},
+            { category: 'iPhone', model: 'iPhone 15 Plus', image: 'https://i.imgur.com/1kOASEx.jpeg', prices: [
+                { storage: '128GB', price: 7000 },
+                { storage: '256GB', price: 7320 },
+                { storage: '512GB', price: 7640 }
+            ]},
+            { category: 'iPhone', model: 'iPhone 15 Pro', image: 'https://i.imgur.com/1kOASEx.jpeg', prices: [
+                { storage: '128GB', price: 7880 },
+                { storage: '256GB', price: 8200 },
+                { storage: '512GB', price: 8520 }
+            ]},
+            { category: 'iPhone', model: 'iPhone 15 Pro Max', image: 'https://i.imgur.com/1kOASEx.jpeg', prices: [
+                { storage: '256GB', price: 9520 },
+                { storage: '512GB', price: 9840 },
+                { storage: '1TB', price: 10160 }
+            ]},
+            { category: 'MacBook', model: 'MacBook Air 13" M1', image: 'https://i.imgur.com/yvjkcsS.jpeg', prices: [
+                { storage: '256GB', price: 7000 }
+            ]},
+            { category: 'MacBook', model: 'MacBook Air 13" M2', image: 'https://i.imgur.com/yvjkcsS.jpeg', prices: [
+                { storage: '256GB', price: 8000 }
+            ]},
+            { category: 'MacBook', model: 'MacBook Pro 14" M3', image: 'https://i.imgur.com/yvjkcsS.jpeg', prices: [
+                { storage: '512GB', price: 12800 }
+            ]},
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const productGrid = document.getElementById('product-grid');
+            const searchBar = document.getElementById('search-bar');
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const noResults = document.getElementById('no-results');
+            
+            const modal = document.getElementById('product-modal');
+            const modalCloseBtn = document.getElementById('modal-close-btn');
+            const modalTitle = document.getElementById('modal-title');
+            const modalPriceList = document.getElementById('modal-price-list');
+            const modalImage = document.getElementById('modal-image');
+            
+            const aiProduct1 = document.getElementById('ai-product1');
+            const aiProduct2 = document.getElementById('ai-product2');
+            const aiRecommendBtn = document.getElementById('ai-recommend-btn');
+            const aiCompareBtn = document.getElementById('ai-compare-btn');
+
+            let currentFilter = 'all';
+
+            // Function to get image URL
+            function getImageUrl(image) {
+                if (image.startsWith('http://') || image.startsWith('https://')) {
+                    // This is a direct link, use it
+                    return image;
+                }
+                // This is a search term, use Unsplash with better keywords
+                return `https://source.unsplash.com/400x300/?${encodeURIComponent(image + ', product photo, isolated, studio')}`;
+            }
+
+            // Function to render products
+            function renderProducts(filter = 'all', searchTerm = '') {
+                productGrid.innerHTML = '';
+                searchTerm = searchTerm.toLowerCase();
+
+                const filteredProducts = productData.filter(product => {
+                    const matchesFilter = filter === 'all' || product.category.toLowerCase() === filter;
+                    const matchesSearch = product.model.toLowerCase().includes(searchTerm);
+                    return matchesFilter && matchesSearch;
+                });
+
+                if (filteredProducts.length === 0) {
+                    noResults.classList.remove('hidden');
+                } else {
+                    noResults.classList.add('hidden');
+                }
+
+                filteredProducts.forEach((product, index) => {
+                    const lowestPrice = product.prices.reduce((min, p) => p.price < min ? p.price : min, product.prices[0].price);
+                    
+                    const productCard = document.createElement('div');
+                    productCard.className = 'bg-gray-800 rounded-lg shadow-lg overflow-hidden flex flex-col border border-gray-700';
+                    productCard.innerHTML = `
+                        <div class="w-full h-48 bg-gray-700 flex items-center justify-center p-2">
+                            <img src="${getImageUrl(product.image)}" alt="${product.model}" class="w-full h-full object-contain">
+                        </div>
+                        <div class="p-4 flex flex-col flex-grow">
+                            <span class="text-sm text-blue-400 font-medium">${product.category}</span>
+                            <h3 class="text-lg font-semibold my-1 text-white">${product.model}</h3>
+                            <p class="text-gray-400 text-sm">Prices from <span class="font-bold text-gray-200">GHS ${lowestPrice.toLocaleString()}</span></p>
+                            <button class="view-options-btn mt-4 w-full bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-blue-700 transition" data-index="${index}">
+                                View Options
+                            </button>
+                        </div>
+                    `;
+                    productGrid.appendChild(productCard);
+                });
+
+                // Add event listeners to new buttons
+                document.querySelectorAll('.view-options-btn').forEach(button => {
+                    button.addEventListener('click', () => {
+                        const productIndex = button.getAttribute('data-index');
+                        const product = filteredProducts[productIndex];
+                        openModal(product);
+                    });
+                });
+            }
+
+            // Function to open modal
+            function openModal(product) {
+                modalTitle.textContent = product.model;
+                modalImage.src = getImageUrl(product.image);
+                modalImage.alt = product.model;
+                
+                modalPriceList.innerHTML = '';
+                product.prices.forEach(p => {
+                    const li = document.createElement('li');
+                    li.className = 'flex justify-between items-center text-gray-300';
+                    li.innerHTML = `
+                        <span>${p.storage}</span>
+                        <span class="font-semibold text-white">GHS ${p.price.toLocaleString()}</span>
+                    `;
+                    modalPriceList.appendChild(li);
+                });
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+
+            // Function to close modal
+            function closeModal() {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+
+            // Event Listeners for filtering
+            searchBar.addEventListener('input', (e) => {
+                renderProducts(currentFilter, e.target.value);
+            });
+
+            filterBtns.forEach(button => {
+                button.addEventListener('click', () => {
+                    filterBtns.forEach(btn => {
+                        btn.classList.remove('bg-blue-600', 'text-white', 'shadow');
+                        btn.classList.add('bg-transparent', 'text-gray-400');
+                    });
+                    button.classList.add('bg-blue-600', 'text-white', 'shadow');
+                    button.classList.remove('bg-transparent', 'text-gray-400');
+                    
+                    currentFilter = button.id.replace('filter-', '');
+                    renderProducts(currentFilter, searchBar.value);
+                });
+            });
+
+            // Modal close events
+            modalCloseBtn.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+
+            // Mobile Menu
+            const menuToggle = document.getElementById('menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            menuToggle.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+                menuToggle.querySelector('svg:first-child').classList.toggle('hidden');
+                menuToggle.querySelector('svg:last-child').classList.toggle('hidden');
+            });
+            // Close mobile menu on link click
+            mobileMenu.addEventListener('click', (e) => {
+                if (e.target.tagName === 'A') {
+                    mobileMenu.classList.add('hidden');
+                    menuToggle.querySelector('svg:first-child').classList.remove('hidden');
+                    menuToggle.querySelector('svg:last-child').classList.add('hidden');
+                }
+            });
+
+            // AI Tools Setup
+            function populateAiSelectors() {
+                const productNames = productData.map(p => p.model);
+                productNames.forEach(name => {
+                    const option1 = document.createElement('option');
+                    option1.value = name;
+                    option1.textContent = name;
+                    aiProduct1.appendChild(option1);
+
+                    const option2 = document.createElement('option');
+                    option2.value = name;
+                    option2.textContent = name;
+                    aiProduct2.appendChild(option2);
+                });
+                // Set default different values
+                if (aiProduct1.options.length > 1) {
+                    aiProduct1.selectedIndex = 0;
+                    aiProduct2.selectedIndex = 1;
+                }
+            }
+
+            // Helper function to call Gemini API
+            async function callGemini(prompt, button, loader, btnText, resultEl) {
+                if (GEMINI_API_KEY === "PASTE_YOUR_GOOGLE_AI_API_KEY_HERE" || GEMINI_API_KEY === "") {
+                    resultEl.innerHTML = '<span class="text-red-400 font-medium">AI Tool Error:</span> API Key is not set up. Please contact the site administrator.';
+                    resultEl.classList.remove('hidden');
+                    return;
+                }
+                
+                button.disabled = true;
+                loader.classList.remove('hidden');
+                btnText.classList.add('hidden');
+                resultEl.classList.add('hidden');
+                resultEl.textContent = '';
+
+                let retries = 3;
+                let delay = 1000;
+
+                while (retries > 0) {
+                    try {
+                        const response = await fetch(GEMINI_API_URL, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                contents: [{ parts: [{ text: prompt }] }],
+                            }),
+                        });
+
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+
+                        const result = await response.json();
+                        const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                        resultEl.textContent = text || "No response generated.";
+                        break; 
+
+                    } catch (error) {
+                        retries--;
+                        if (retries === 0) {
+                            resultEl.textContent = "Error generating content after several attempts. Please try again later.";
+                            break;
+                        }
+                        await new Promise(res => setTimeout(res, delay));
+                        delay *= 2;
+                    }
+                }
+                
+                resultEl.classList.remove('hidden');
+                button.disabled = false;
+                loader.classList.add('hidden');
+                btnText.classList.remove('hidden');
+            }
+
+            // AI Recommend Button
+            aiRecommendBtn.addEventListener('click', () => {
+                const budget = document.getElementById('ai-budget').value;
+                const need = document.getElementById('ai-need').value;
+                const productList = productData.map(p => `${p.model} (Starts at GHS ${p.prices[0].price})`).join(', ');
+
+                const prompt = `Act as a helpful sales assistant for Blecobell, a wholesale Apple dealer in Ghana. A reseller customer has these needs:
+                - Budget: ${budget}
+                - Main Need: ${need}
+
+                Based on this product list, recommend 1-2 specific products and briefly explain why.
+                Product List: ${productList}`;
+                
+                callGemini(prompt, aiRecommendBtn, 
+                    document.getElementById('ai-recommend-loader'), 
+                    document.getElementById('ai-recommend-btn-text'), 
+                    document.getElementById('ai-recommend-result')
+                );
+            });
+
+            // AI Compare Button
+            aiCompareBtn.addEventListener('click', () => {
+                const product1 = aiProduct1.value;
+                const product2 = aiProduct2.value;
+
+                if (product1 === product2) {
+                    const resultEl = document.getElementById('ai-compare-result');
+                    resultEl.textContent = "Please select two different products to compare.";
+                    resultEl.classList.remove('hidden');
+                    return;
+                }
+
+                const prompt = `Act as a helpful tech expert. A customer wants to compare two products: ${product1} and ${product2}.
+                Briefly summarize the key differences a reseller should know (e.g., camera, chip, display, year). Be concise and use bullet points.`;
+                
+                callGemini(prompt, aiCompareBtn, 
+                    document.getElementById('ai-compare-loader'), 
+                    document.getElementById('ai-compare-btn-text'), 
+                    document.getElementById('ai-compare-result')
+                );
+            });
+            
+            // --- New Hero Image Generation ---
+            async function generateHeroImage() {
+                const loader = document.getElementById('hero-loader');
+                const imageEl = document.getElementById('hero-image');
+                
+                const payload = {
+                    instances: { 
+                        prompt: "a sleek, minimalist, abstract 3D render of floating glass shapes and soft curves, reminiscent of high-end electronics, in a dark, premium environment. Use a color palette of deep indigo, electric blue, and silver, with studio quality lighting." 
+                    },
+                    parameters: { "sampleCount": 1 }
+                };
+
+                let retries = 3;
+                let delay = 1000;
+
+                while (retries > 0) {
+                    try {
+                        const response = await fetch(IMAGEN_API_URL, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+
+                        if (!response.ok) {
+                             throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+
+                        const result = await response.json();
+                        if (result.predictions && result.predictions.length > 0 && result.predictions[0].bytesBase64Encoded) {
+                            const base64Data = result.predictions[0].bytesBase64Encoded;
+                            imageEl.src = `data:image/png;base64,${base64Data}`;
+                            imageEl.onload = () => {
+                                loader.classList.add('hidden');
+                                imageEl.classList.remove('opacity-0', 'blur-sm', 'scale-110');
+                            };
+                            return;
+                        } else {
+                            throw new Error("Invalid image data received.");
+                        }
+
+                    } catch (error) {
+                        retries--;
+                        if (retries === 0) {
+                            loader.innerHTML = '<p class="text-gray-400 text-sm">Error loading background. Refresh to try again.</p>';
+                            break;
+                        }
+                        await new Promise(res => setTimeout(res, delay));
+                        delay *= 2;
+                    }
+                }
+            }
+
+            // Initial Page Load
+            renderProducts();
+            populateAiSelectors();
+            generateHeroImage();
+        });
+    </script>
+</body>
+</html>
